@@ -16,8 +16,7 @@ typedef struct {
   size_t rows_a;     
   size_t cols_a;     
   size_t cols_b; 
-
-
+  size_t block_size;
 
   int     cpu;
   int     nthreads;

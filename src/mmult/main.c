@@ -65,6 +65,7 @@ int main(int argc, char** argv)
   /* Arguments */
   int nthreads = 1;
   int cpu      = 0;
+  size_t block_size = 4;  // Default block size
 
   int nruns    = 10000;
   int nstdevs  = 3;
@@ -91,17 +92,19 @@ int main(int argc, char** argv)
     if (strcmp(argv[i], "-i") == 0 || strcmp(argv[i], "--impl") == 0) {
       assert (++i < argc);
       if (strcmp(argv[i], "naive") == 0) {
-        impl = impl_scalar_naive_ptr; impl_str = "scalar_naive";
-    } else if (strcmp(argv[i], "opt") == 0 || strcmp(argv[i], "vec") == 0 || strcmp(argv[i], "para") == 0) {
+        impl = impl_scalar_naive_ptr; 
+        impl_str = "scalar_naive";
+      } else if (strcmp(argv[i], "opt") == 0) {
+        impl = impl_scalar_opt_ptr;
+        impl_str = "scalar_opt";
+      } else if (strcmp(argv[i], "vec") == 0 || strcmp(argv[i], "para") == 0) {
         printf("\n");
         printf("The selected implementation \"%s\" is not implemented yet.\n", argv[i]);
-        exit(0); // Exit the program gracefully
-    } else {
+        exit(0);
+      } else {
         impl = NULL;
         impl_str = "unknown";
-    }
-
-
+      }
       continue;
     }
 
@@ -158,6 +161,14 @@ int main(int argc, char** argv)
       continue;
     }
 
+    /* Block size */
+    if (strcmp(argv[i], "--block-size") == 0) {
+      assert (++i < argc);
+      block_size = atoi(argv[i]);
+
+      continue;
+    }
+
     /* Help */
     if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
       help = true;
@@ -190,6 +201,7 @@ int main(int argc, char** argv)
     printf("         --rows_a    Set the number of rows in Matrix A (default = %zu)\n", rows_a);
     printf("         --cols_a    Set the number of columns in Matrix A (default = %zu)\n", cols_a);
     printf("         --cols_b    Set the number of columns in Matrix B (default = %zu)\n", cols_b);
+    printf("         --block-size Set the block size for optimized implementation (default = %zu)\n", block_size);
     printf("         --nruns     Number of runs to the implementation (default = %d)\n", nruns);
     printf("         --stdevs    Number of standard deviation to exclude outliers (default = %d)\n", nstdevs);
     printf("\n");
@@ -313,7 +325,7 @@ int main(int argc, char** argv)
   args.rows_a   = rows_a;
   args.cols_a   = cols_a;
   args.cols_b   = cols_b;
-
+  args.block_size = block_size;
   args.cpu      = cpu;
   args.nthreads = nthreads;
 

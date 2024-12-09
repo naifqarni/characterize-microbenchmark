@@ -3,3 +3,4 @@ build/
 # CSV files
 *.csv
 .vscode/launch.json
+coe502_t241_arch_insights.pdf
