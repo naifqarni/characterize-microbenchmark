@@ -264,13 +264,13 @@ int main(int argc, char** argv)
   /* Allocation and initialization */
 
 
-  int* A = malloc(rows_a * cols_a * sizeof(int));
-  int* B = malloc(cols_a * cols_b * sizeof(int));
-  int* C = malloc(rows_a * cols_b * sizeof(int));
-  int* D = malloc(rows_a * cols_b * sizeof(int));
+  byte* A = __ALLOC_INIT_DATA(byte, rows_a * cols_a * sizeof(float));
+  byte* B = __ALLOC_INIT_DATA(byte, cols_a * cols_b * sizeof(float) );
+  byte* C = __ALLOC_INIT_DATA(byte, rows_a * cols_b * sizeof(float) + 4);
+  byte* D = __ALLOC_INIT_DATA(byte, rows_a * cols_b * sizeof(float) + 4);
 
   int sizeofarray = rows_a * cols_b;
-  int sizefull = rows_a * cols_a * cols_b * sizeof(int);
+  int full_size = rows_a * cols_b * sizeof(float);
 
     /* Initialize matrices A and B with random values */
   for (size_t i = 0; i < rows_a * cols_a; i++) {
@@ -282,8 +282,8 @@ int main(int argc, char** argv)
 
   /* Setting a guards, which is 0xdeadcafe.
      The guard should not change or be touched. */
-  __SET_GUARD(C , sizeofarray);
-  __SET_GUARD(D, sizeofarray);
+  __SET_GUARD(C , full_size);
+  __SET_GUARD(D, full_size);
 
   /* Generate ref data */
   /* Arguments for the functions */
@@ -333,8 +333,8 @@ int main(int argc, char** argv)
 
   /* Verfication */
   printf("  * Verifying results .... ");
-  bool match = __CHECK_MATCH(C, D, sizeofarray);
-  bool guard = __CHECK_GUARD(D, sizeofarray);
+  bool match = __CHECK_MATCH(C, D, full_size);
+  bool guard = __CHECK_GUARD(C, full_size);
   if (match && guard) {
     printf("Success\n");
   } else if (!match && guard) {

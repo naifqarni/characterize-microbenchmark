@@ -40,7 +40,8 @@ void* impl_scalar_naive(void* args)
 
    
     for (size_t i = 0; i < rows_a; i++) {          
-        for (size_t j = 0; j < cols_b; j++) {      
+        for (size_t j = 0; j < cols_b; j++) { 
+                 
             for (size_t k = 0; k < cols_a; k++) {  
                 C[i * cols_b + j] += A[i * cols_a + k] * B[k * cols_b + j];
             }
