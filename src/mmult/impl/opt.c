@@ -13,8 +13,15 @@
 #include "common/macros.h"
 #include "common/types.h"
 
+/* Add MIN macro definition if not already defined */
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
 /* Include application-specific headers */
 #include "include/types.h"
+
+#define BLOCK_SIZE 32  // Adjust block size based on cache size
 
 /* Alternative Implementation */
 #pragma GCC push_options
@@ -33,7 +40,6 @@ void* impl_scalar_opt(void* args)
     size_t cols_a = parsed_args->cols_a;  
     size_t cols_b = parsed_args->cols_b;  
     size_t block_size = parsed_args->block_size;
-
     /* Initialize the output matrix to zero */
     for (size_t i = 0; i < rows_a * cols_b; i++) {
         C[i] = 0;
